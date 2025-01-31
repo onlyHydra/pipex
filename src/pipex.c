@@ -3,69 +3,105 @@
 /*                                                        :::      ::::::::   */
 /*   pipex.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hydra <hydra@student.42.fr>                +#+  +:+       +#+        */
+/*   By: schiper <schiper@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/27 22:01:43 by hydra             #+#    #+#             */
-/*   Updated: 2025/01/27 22:07:49 by hydra            ###   ########.fr       */
+/*   Updated: 2025/01/31 19:52:10 by schiper          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#include "libft.h"
 #include "pipex.h"
 
-void	child(char **argv, char **encp, int *fd)
+void	child(char *argv, char **encp)
 {
-	int	file_in;
+	pid_t	pid;
+	int		fd[2];
 
-	file_in = open(argv[1], O_RDONLY, 0777);
-	if (file_in == -1)
+	if (pipe(fd) == -1)
+		error_handler();
+	pid = fork();
+	if (pid < 0)
+		error_handler();
+	if (pid == 0)
 	{
-		perror("Error");
-		exit(1);
+		close(fd[0]);
+		dup2(fd[1], STDOUT_FILENO);
+		execute(argv, encp);
 	}
-	dup2(file_in, STDIN_FILENO);
-	dup2(fd[1], STDOUT_FILENO);
-	close(fd[0]);
-	execute(argv[2], encp);
+	else
+	{
+		close(fd[1]);
+		dup2(fd[0], STDIN_FILENO);
+		waitpid(pid, NULL, 0);
+	}
 }
 
-void	parent(char **argv, char **encp, int *fd)
+void	read_console(char *argv)
 {
-	int	file_out;
+	char	*line;
 
-	file_out = open(argv[4], O_WRONLY | O_CREAT | O_TRUNC, 0777);
-	if (file_out == -1)
+	while (get_next_line(&line) > 0)
 	{
-		perror("Error");
-		exit(1);
+		if (ft_strncmp(line, argv, ft_strlen(argv)) == 0)
+		{
+			free(line);
+			exit(EXIT_SUCCESS);
+		}
+		write(1, line, strlen(line));
+		free(line);
 	}
-	dup2(file_out, STDOUT_FILENO);
-	dup2(fd[0], STDIN_FILENO);
-	close(fd[1]);
-	execute(argv[3], encp);
+}
+
+void	console_input(char *argv)
+{
+	pid_t	pid;
+	int		fd[2];
+
+	if (pipe(fd) == -1)
+		error_handler();
+	pid = fork();
+	if (pid < 0)
+		error_handler();
+	if (pid == 0)
+	{
+		close(fd[0]);
+		read_console(argv);
+		close(fd[1]);
+	}
+	else
+	{
+		close(fd[1]);
+		dup2(fd[0], STDIN_FILENO);
+		waitpid(pid, NULL, 0);
+	}
 }
 
 int	main(int argc, char **argv, char **envp)
 {
-	int	fd[2];
-	int	pid;
+	int	file_in;
+	int	file_out;
+	int	i;
 
-	if (argc == 5)
+	if (argc >= 5)
 	{
-		if (pipe(fd) == -1)
+		if (ft_strncmp(argv[1], "here_doc", 8) == 0)
 		{
-			perror("Error");
-			exit(1);
+			i = 3;
+			file_out = open_file(argv[argc - 1], 0);
+			console_input(argv[2]);
 		}
-		pid = fork();
-		if (pid == -1)
+		else
 		{
-			perror("Error");
-			exit(1);
+			i = 2;
+			file_out = open_file(argv[argc - 1], 1);
+			file_in = open_file(argv[1], 2);
+			dup2(file_in, STDIN_FILENO);
 		}
-		if (pid == 0)
-			child(argv, envp, fd);
-		waitpid(pid, NULL, 0);
-		parent(argv, envp, fd);
+		while (i < argc - 2)
+			child(argv[i++], envp);
+		dup2(file_out, STDOUT_FILENO);
+		execute(argv[argc - 2], envp);
 	}
-	return (0);
+	usage();
 }

@@ -6,7 +6,7 @@
 /*   By: schiper <schiper@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/30 19:15:27 by schiper           #+#    #+#             */
-/*   Updated: 2025/01/31 18:10:49 by schiper          ###   ########.fr       */
+/*   Updated: 2025/02/01 16:49:43 by schiper          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,8 +56,8 @@ void	execute(char *argv, char **envp)
 		while (cmd[++i])
 			free(cmd[i]);
 		free(cmd);
-		error_handler();
+		error_handler(argv, ": command not found\n", 127);
 	}
 	if (execve(path, cmd, envp) == -1)
-		error_handler();
+		error_handler(argv, ": command not found\n", 127);
 }

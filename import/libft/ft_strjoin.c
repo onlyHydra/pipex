@@ -6,7 +6,7 @@
 /*   By: schiper <schiper@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/06 16:47:34 by schiper           #+#    #+#             */
-/*   Updated: 2025/01/31 18:11:49 by schiper          ###   ########.fr       */
+/*   Updated: 2025/02/01 13:22:16 by schiper          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@ char	*ft_strjoin(char const *s1, char const *s2)
 	char			*str;
 	unsigned int	str_len;
 
-	if (s2 == NULL && s1 == NULL)
+	if (s2 == NULL || s1 == NULL)
 		return (NULL);
 	str_len = ft_strlen(s1) + ft_strlen(s2) + 1;
 	str = malloc(str_len);

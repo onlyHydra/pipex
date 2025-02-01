@@ -6,25 +6,28 @@
 /*   By: schiper <schiper@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/27 22:01:43 by hydra             #+#    #+#             */
-/*   Updated: 2025/01/31 19:52:10 by schiper          ###   ########.fr       */
+/*   Updated: 2025/02/01 16:43:28 by schiper          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 #include "pipex.h"
+#include <stdio.h>
 
-void	child(char *argv, char **encp)
+void	child(char *argv, char **encp, t_file file)
 {
 	pid_t	pid;
 	int		fd[2];
 
 	if (pipe(fd) == -1)
-		error_handler();
+		error_handler("Error", "pipe", 1);
 	pid = fork();
 	if (pid < 0)
-		error_handler();
+		error_handler("Error", "fork", 1);
 	if (pid == 0)
 	{
+		if (file.file_fd < 0)
+			error_handler(file.filename, ": No such file or directory\n", 1);
 		close(fd[0]);
 		dup2(fd[1], STDOUT_FILENO);
 		execute(argv, encp);
@@ -59,10 +62,10 @@ void	console_input(char *argv)
 	int		fd[2];
 
 	if (pipe(fd) == -1)
-		error_handler();
+		error_handler("Error", "pipe", 1);
 	pid = fork();
 	if (pid < 0)
-		error_handler();
+		error_handler("Error", "fork", 1);
 	if (pid == 0)
 	{
 		close(fd[0]);
@@ -77,30 +80,42 @@ void	console_input(char *argv)
 	}
 }
 
+void	launch_process(char **argv, char **envp, int argc, t_file file)
+{
+	int	i;
+
+	i = 0;
+	while (i < argc - 2)
+	{
+		child(argv[i], envp, file);
+		i++;
+	}
+}
+
 int	main(int argc, char **argv, char **envp)
 {
-	int	file_in;
-	int	file_out;
-	int	i;
+	int		i;
+	t_file	file;
 
 	if (argc >= 5)
 	{
 		if (ft_strncmp(argv[1], "here_doc", 8) == 0)
 		{
 			i = 3;
-			file_out = open_file(argv[argc - 1], 0);
+			file.file_out = open_file(argv[argc - 1], 0);
 			console_input(argv[2]);
 		}
 		else
 		{
 			i = 2;
-			file_out = open_file(argv[argc - 1], 1);
-			file_in = open_file(argv[1], 2);
-			dup2(file_in, STDIN_FILENO);
+			file.file_out = open_file(argv[argc - 1], 1);
+			file.file_in = open_file(argv[1], 2);
+			dup2(file.file_in, STDIN_FILENO);
+			file.file_fd = file.file_in;
+			file.filename = argv[1];
 		}
-		while (i < argc - 2)
-			child(argv[i++], envp);
-		dup2(file_out, STDOUT_FILENO);
+		launch_process(argv + i, envp, argc - i, file);
+		dup2(file.file_out, STDOUT_FILENO);
 		execute(argv[argc - 2], envp);
 	}
 	usage();

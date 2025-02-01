@@ -6,7 +6,7 @@
 /*   By: schiper <schiper@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/27 22:09:24 by hydra             #+#    #+#             */
-/*   Updated: 2025/01/31 18:54:38 by schiper          ###   ########.fr       */
+/*   Updated: 2025/02/01 15:49:58 by schiper          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@ void	usage(void)
 	ft_putstr_fd("\033[31mError: Bad argument\n\e[0m", 2);
 	ft_putstr_fd("Ex: ./pipex <file1> <cmd1> <cmd2> <...> <file2>\n", 1);
 	ft_putstr_fd("./pipex \"here_doc\" <LIMITER> <cmd> <cmd1> ... <file>\n", 1);
-	exit(EXIT_SUCCESS);
+	exit(EXIT_FAILURE);
 }
 
 int	open_file(char *argv, int i)
@@ -32,15 +32,15 @@ int	open_file(char *argv, int i)
 		file = open(argv, O_WRONLY | O_CREAT | O_TRUNC, 0777);
 	else if (i == 2)
 		file = open(argv, O_RDONLY, 0777);
-	if (file == -1)
-		error_handler();
 	return (file);
 }
 
-void	error_handler(void)
+void	error_handler(char *err, char *message, int exit_code)
 {
-	perror("\033[31mError: Something went wrong\n\e[0m");
-	exit(EXIT_FAILURE);
+	write(2, "pipex: ", 7);
+	write(2, err, ft_strlen(err));
+	write(2, message, ft_strlen(message));
+	exit(exit_code);
 }
 
 int	get_next_line(char **line)

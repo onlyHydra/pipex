@@ -6,7 +6,7 @@
 /*   By: schiper <schiper@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/27 22:01:43 by hydra             #+#    #+#             */
-/*   Updated: 2025/02/04 03:58:49 by schiper          ###   ########.fr       */
+/*   Updated: 2025/02/04 15:28:07 by schiper          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,12 @@ void	child(char *argv, char **encp, t_file file)
 		if (file.file_fd < 0)
 			error_handler(file.filename, ": No such file or directory\n", 1);
 		close(fd[0]);
-		dup2(fd[1], STDOUT_FILENO);
+        fd[1] = STDOUT_FILENO;
+        ft_putendl_fd("We are in the parent", STDOUT_FILENO);
+		if(dup2(fd[1], STDOUT_FILENO) == -1) {
+            perror("dup2");
+            exit(EXIT_FAILURE);
+        }
 		execute(argv, encp);
 	}
 	else
@@ -96,7 +101,9 @@ int	main(int argc, char **argv, char **envp)
 	int		i;
 	t_file	file;
 
-	if (argc == 4)
+
+
+	if (argc == 5)
 	{
 		i = 2;
 		file.file_out = open_file(argv[argc - 1], 1);

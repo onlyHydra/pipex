@@ -6,7 +6,7 @@
 /*   By: schiper <schiper@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/30 19:15:27 by schiper           #+#    #+#             */
-/*   Updated: 2025/02/04 02:21:52 by schiper          ###   ########.fr       */
+/*   Updated: 2025/02/04 15:20:53 by schiper          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,10 +83,17 @@ void	execute(char *argv, char **envp)
 	char	**cmd;
 	char	*path;
 
+    printf("do we come inside execute?\n");
 	if (ft_strnstr(argv, "awk", ft_strlen(argv)) != 0)
 	{
 		cmd = awk_split(argv, ' ');
 		cmd = trim_cmd(cmd);
+		int j = 0;
+		while (cmd[j]){
+		    printf("cmd[%d] = %s\n", j, cmd[j]);
+            fflush(stdout);
+            j++;
+		}
 	}
 	else
 		cmd = ft_split(argv, ' ');

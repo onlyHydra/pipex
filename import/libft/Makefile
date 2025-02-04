@@ -33,7 +33,12 @@ SRC = ft_isalpha.c\
 	ft_putchar_fd.c\
 	ft_putstr_fd.c\
 	ft_putendl_fd.c\
-	ft_putnbr_fd.c
+	ft_putnbr_fd.c\
+	ft_split_strtok.c\
+	ft_strtok.c\
+	ft_strspn.c\
+	ft_strpbrk.c\
+	ft_strncpy.c\
 
 BONUS = ft_lstnew.c\
 	ft_lstadd_front.c\
@@ -51,7 +56,7 @@ OBJ = $(SRC:.c=.o)
 
 CC = cc
 
-CFLAGS = -Wall -Wextra -Werror
+CFLAGS = -Wall -Wextra -Werror -g 
 
 all: $(NAME)
 

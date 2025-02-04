@@ -6,7 +6,7 @@
 /*   By: schiper <schiper@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/30 19:15:27 by schiper           #+#    #+#             */
-/*   Updated: 2025/02/01 16:49:43 by schiper          ###   ########.fr       */
+/*   Updated: 2025/02/04 02:21:52 by schiper          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,22 +42,66 @@ static char	*envp_get_path(char *cmd, char **envp)
 	return ((void *)0);
 }
 
+static void	free_split(char **cmd)
+{
+	int	i;
+
+	i = -1;
+	while (cmd[++i])
+		free(cmd[i]);
+	free(cmd);
+}
+
+static char	**trim_cmd(char **cmd)
+{
+	int		i;
+	char	*trimmed;
+
+	i = 0;
+	while (cmd[i])
+	{
+		trimmed = ft_strtrim(cmd[i], "'");
+		if (trimmed)
+		{
+			free(cmd[i]);
+			cmd[i] = trimmed;
+		}
+		else
+		{
+			while (i > 0)
+				free(cmd[--i]);
+			free(cmd);
+			return (NULL);
+		}
+		i++;
+	}
+	return (cmd);
+}
+
 void	execute(char *argv, char **envp)
 {
 	char	**cmd;
-	int		i;
 	char	*path;
 
-	i = -1;
-	cmd = ft_split(argv, ' ');
+	if (ft_strnstr(argv, "awk", ft_strlen(argv)) != 0)
+	{
+		cmd = awk_split(argv, ' ');
+		cmd = trim_cmd(cmd);
+	}
+	else
+		cmd = ft_split(argv, ' ');
 	path = envp_get_path(cmd[0], envp);
 	if (!path)
 	{
-		while (cmd[++i])
-			free(cmd[i]);
-		free(cmd);
+		free_split(cmd);
 		error_handler(argv, ": command not found\n", 127);
 	}
 	if (execve(path, cmd, envp) == -1)
+	{
+		free_split(cmd);
+		free(path);
 		error_handler(argv, ": command not found\n", 127);
+	}
+	free_split(cmd);
+	free(path);
 }

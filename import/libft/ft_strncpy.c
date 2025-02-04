@@ -1,34 +1,33 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_strtrim.c                                       :+:      :+:    :+:   */
+/*   ft_strncpy.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: schiper <schiper@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/11/06 19:24:11 by schiper           #+#    #+#             */
-/*   Updated: 2025/02/04 02:04:03 by schiper          ###   ########.fr       */
+/*   Created: 2025/02/04 02:00:44 by schiper           #+#    #+#             */
+/*   Updated: 2025/02/04 02:01:42 by schiper          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-char	*ft_strtrim(char const *s1, char const *set)
+char	*ft_strncpy(char *dest, const char *src, size_t n)
 {
-	char			*str;
-	unsigned int	start;
-	unsigned int	end;
+	size_t	i;
 
-	if (s1 == NULL || set == NULL)
+	if (!dest || !src)
 		return (NULL);
-	start = 0;
-	end = ft_strlen(s1);
-	while (s1[start] && ft_strchr(set, s1[start]))
-		start++;
-	while (end > start && ft_strchr(set, s1[end - 1]))
-		end--;
-	str = (char *)malloc(sizeof(char) * (end - start + 1));
-	if (str == NULL)
-		return (NULL);
-	ft_strlcpy(str, &s1[start], end - start + 1);
-	return (str);
+	i = 0;
+	while (i < n && src[i] != '\0')
+	{
+		dest[i] = src[i];
+		i++;
+	}
+	while (i < n)
+	{
+		dest[i] = '\0';
+		i++;
+	}
+	return (dest);
 }

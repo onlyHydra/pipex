@@ -1,25 +1,31 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_strlen.c                                        :+:      :+:    :+:   */
+/*   ft_strpbrk.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: schiper <schiper@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/11/04 14:15:30 by schiper           #+#    #+#             */
-/*   Updated: 2025/02/04 03:34:51 by schiper          ###   ########.fr       */
+/*   Created: 2025/02/04 01:08:17 by schiper           #+#    #+#             */
+/*   Updated: 2025/02/04 01:15:48 by schiper          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-int	ft_strlen(const char *s)
+char	*ft_strpbrk(const char *str, const char *delim)
 {
-	int	i;
+	char	*d;
 
-	i = 0;
-	if (s == NULL)
-		return (0);
-	while (s[i] != '\0')
-		i++;
-	return (i);
+	while (*str)
+	{
+		d = (char *)delim;
+		while (*d)
+		{
+			if (*str == *d)
+				return ((char *)str);
+			d++;
+		}
+		str++;
+	}
+	return (NULL);
 }

@@ -1,25 +1,34 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_strlen.c                                        :+:      :+:    :+:   */
+/*   ft_strspn.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: schiper <schiper@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/11/04 14:15:30 by schiper           #+#    #+#             */
-/*   Updated: 2025/02/04 03:34:51 by schiper          ###   ########.fr       */
+/*   Created: 2025/02/04 01:06:59 by schiper           #+#    #+#             */
+/*   Updated: 2025/02/04 01:15:26 by schiper          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-int	ft_strlen(const char *s)
+size_t	ft_strspn(const char *str, const char *delim)
 {
-	int	i;
+	const char	*s = str;
+	char		*d;
 
-	i = 0;
-	if (s == NULL)
-		return (0);
-	while (s[i] != '\0')
-		i++;
-	return (i);
+	while (*s)
+	{
+		d = (char *)delim;
+		while (*d)
+		{
+			if (*s == *d)
+				break ;
+			d++;
+		}
+		if (*d == '\0')
+			break ;
+		s++;
+	}
+	return (s - str);
 }

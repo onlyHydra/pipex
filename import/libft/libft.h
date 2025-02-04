@@ -6,7 +6,7 @@
 /*   By: schiper <schiper@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/04 19:17:22 by schiper           #+#    #+#             */
-/*   Updated: 2024/11/08 19:28:18 by schiper          ###   ########.fr       */
+/*   Updated: 2025/02/04 02:01:55 by schiper          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,11 @@
 
 # include <stdlib.h>
 # include <unistd.h>
+
+# define QUOTE_SINGLE '\''
+# define QUOTE_DOUBLE '"'
+# define BRACE_OPEN '{'
+# define BRACE_CLOSE '}'
 
 typedef struct s_list
 {
@@ -69,5 +74,9 @@ t_list				*ft_lstmap(t_list *lst, void *(*f)(void *),
 t_list				*ft_lstmap(t_list *lst, void *(*f)(void *),
 						void (*del)(void *));
 t_list				*ft_lstnew(void *content);
-
+char				**ft_split_strtok(const char *str);
+char				*ft_strtok(char *str, const char *delim);
+size_t				ft_strspn(const char *str, const char *delim);
+char				*ft_strpbrk(const char *str, const char *delim);
+char				*ft_strncpy(char *dest, const char *src, size_t n);
 #endif

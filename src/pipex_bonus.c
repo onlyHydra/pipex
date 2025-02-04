@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   pipex.c                                            :+:      :+:    :+:   */
+/*   pipex_bonus.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: schiper <schiper@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/27 22:01:43 by hydra             #+#    #+#             */
-/*   Updated: 2025/02/04 03:58:49 by schiper          ###   ########.fr       */
+/*   Updated: 2025/02/04 03:57:28 by schiper          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,21 +96,26 @@ int	main(int argc, char **argv, char **envp)
 	int		i;
 	t_file	file;
 
-	if (argc == 4)
+	if (argc >= 5)
 	{
-		i = 2;
-		file.file_out = open_file(argv[argc - 1], 1);
-		file.file_fd = open_file(argv[1], 2);
-		dup2(file.file_fd, STDIN_FILENO);
-		file.filename = argv[1];
+		if (ft_strncmp(argv[1], "here_doc", 8) == 0)
+		{
+			i = 3;
+			file.file_out = open_file(argv[argc - 1], 0);
+			console_input(argv[2]);
+		}
+		else
+		{
+			i = 2;
+			file.file_out = open_file(argv[argc - 1], 1);
+			file.file_fd = open_file(argv[1], 2);
+			dup2(file.file_fd, STDIN_FILENO);
+			file.filename = argv[1];
+		}
 		launch_process(argv + i, envp, argc - i, file);
 		dup2(file.file_out, STDOUT_FILENO);
 		execute(argv[argc - 2], envp);
 	}
 	else
-	{
-		ft_putstr_fd("\033[31mError: Bad argument\n\e[0m", 2);
-		ft_putstr_fd("Ex: ./pipex <file1> <cmd1> <cmd2> <file2>\n", 1);
-		exit(EXIT_FAILURE);
-	}
+		usage();
 }

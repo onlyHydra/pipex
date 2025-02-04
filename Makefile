@@ -6,12 +6,12 @@
 #    By: schiper <schiper@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/01/30 19:24:08 by schiper           #+#    #+#              #
-#    Updated: 2025/02/01 16:58:25 by schiper          ###   ########.fr        #
+#    Updated: 2025/02/04 04:00:07 by schiper          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 CC = gcc
-CFLAGS = -g -Wall -Wextra -Werror
+CFLAGS = -Wall -Wextra -Werror -g 
 
 SRCDIR = src
 INCDIR = headers
@@ -25,7 +25,7 @@ SRCSBNS = $(shell find $(SRCDIR) -name "*.c" ! -name "pipex.c")
 OBJS = $(SRCS:$(SRCDIR)/%.c=$(OBJDIR)/%.o)
 OBJSBNS = $(SRCSBNS:$(SRCDIR)/%.c=$(OBJDIR)/%.o)
 NAME = pipex
-NAMEBNS = pipex
+NAMEBNS = pipex_bonus
 INCLUDES = -I$(INCDIR) -I$(LIBFT)
 
 LIBS = -L$(LIBFT) -lft
@@ -51,6 +51,7 @@ clean:
 
 fclean: clean
 	rm -f $(NAME)
+	rm -f $(NAMEBNS)
 	$(MAKE) -C $(LIBFT) fclean
 
 re: fclean all

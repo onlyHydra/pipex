@@ -6,7 +6,7 @@
 /*   By: schiper <schiper@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/27 22:09:24 by hydra             #+#    #+#             */
-/*   Updated: 2025/02/01 15:49:58 by schiper          ###   ########.fr       */
+/*   Updated: 2025/02/06 03:32:14 by schiper          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,14 +32,14 @@ int	open_file(char *argv, int i)
 		file = open(argv, O_WRONLY | O_CREAT | O_TRUNC, 0777);
 	else if (i == 2)
 		file = open(argv, O_RDONLY, 0777);
+	if (file < 0)
+		perror(argv);
 	return (file);
 }
 
-void	error_handler(char *err, char *message, int exit_code)
+void	error_handler(char *message, int exit_code)
 {
-	write(2, "pipex: ", 7);
-	write(2, err, ft_strlen(err));
-	write(2, message, ft_strlen(message));
+	perror(message);
 	exit(exit_code);
 }
 

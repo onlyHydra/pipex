@@ -6,36 +6,39 @@
 /*   By: schiper <schiper@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/27 22:01:43 by hydra             #+#    #+#             */
-/*   Updated: 2025/02/04 03:57:28 by schiper          ###   ########.fr       */
+/*   Updated: 2025/02/06 03:53:56 by schiper          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 #include "pipex.h"
 
-void	child(char *argv, char **encp, t_file file)
+static void	child(char *argv, char **encp, t_file file)
 {
 	pid_t	pid;
 	int		fd[2];
 
 	if (pipe(fd) == -1)
-		error_handler("Error", "pipe", 1);
+		error_handler("pipex", 1);
 	pid = fork();
 	if (pid < 0)
-		error_handler("Error", "fork", 1);
+		error_handler("pipex", 1);
 	if (pid == 0)
 	{
 		if (file.file_fd < 0)
-			error_handler(file.filename, ": No such file or directory\n", 1);
+			exit(1);
 		close(fd[0]);
-		dup2(fd[1], STDOUT_FILENO);
+		if (dup2(fd[1], STDOUT_FILENO) == -1)
+			error_handler("pipex", 1);
 		execute(argv, encp);
+		close(fd[1]);
 	}
 	else
 	{
 		close(fd[1]);
 		dup2(fd[0], STDIN_FILENO);
 		waitpid(pid, NULL, 0);
+		close(fd[0]);
 	}
 }
 
@@ -61,13 +64,14 @@ void	console_input(char *argv)
 	int		fd[2];
 
 	if (pipe(fd) == -1)
-		error_handler("Error", "pipe", 1);
+		error_handler("pipex", 1);
 	pid = fork();
 	if (pid < 0)
-		error_handler("Error", "fork", 1);
+		error_handler("pipex", 1);
 	if (pid == 0)
 	{
 		close(fd[0]);
+		dup2(fd[1], STDOUT_FILENO);
 		read_console(argv);
 		close(fd[1]);
 	}
@@ -76,6 +80,7 @@ void	console_input(char *argv)
 		close(fd[1]);
 		dup2(fd[0], STDIN_FILENO);
 		waitpid(pid, NULL, 0);
+		close(fd[0]);
 	}
 }
 
@@ -101,7 +106,7 @@ int	main(int argc, char **argv, char **envp)
 		if (ft_strncmp(argv[1], "here_doc", 8) == 0)
 		{
 			i = 3;
-			file.file_out = open_file(argv[argc - 1], 0);
+			file.file_out = open_file(argv[argc - 1], 1);
 			console_input(argv[2]);
 		}
 		else

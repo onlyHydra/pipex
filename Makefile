@@ -6,7 +6,7 @@
 #    By: schiper <schiper@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/01/30 19:24:08 by schiper           #+#    #+#              #
-#    Updated: 2025/02/04 04:00:07 by schiper          ###   ########.fr        #
+#    Updated: 2025/02/06 04:14:31 by schiper          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -20,8 +20,8 @@ OBJDIR = src
 
 LIBFT = $(LIBDIR)/libft
 
-SRCS = $(shell find $(SRCDIR) -name "*.c" ! -name "*_bonus.c")
-SRCSBNS = $(shell find $(SRCDIR) -name "*.c" ! -name "pipex.c")
+SRCS = ${SRCDIR}/pipex.c ${SRCDIR}/awk_split.c ${SRCDIR}/utils.c ${SRCDIR}/utils2.c
+SRCSBNS = ${SRCDIR}/pipex_bonus.c ${SRCDIR}/awk_split.c ${SRCDIR}/utils.c ${SRCDIR}/utils2.c
 OBJS = $(SRCS:$(SRCDIR)/%.c=$(OBJDIR)/%.o)
 OBJSBNS = $(SRCSBNS:$(SRCDIR)/%.c=$(OBJDIR)/%.o)
 NAME = pipex
